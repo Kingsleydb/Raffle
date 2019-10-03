@@ -99,5 +99,13 @@ describe('Raffle Contract', () => {
         const finalBalance = await web3.eth.getBalance(accounts[0]);
         const difference = finalBalance - initialBalance;
         assert(difference > web3.utils.toWei('.9', 'ether'));
+
+        await raffle.methods.enter().send({
+            from: accounts[1],
+            value: web3.utils.toWei('1','ether')
+        }); 
+
+        const players = await raffle.methods.getPlayers().call({ from: accounts[0] });
+        assert.equal(1, players.length);
     });
 });
