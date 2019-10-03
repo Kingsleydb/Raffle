@@ -62,4 +62,42 @@ describe('Raffle Contract', () => {
 
         assert.equal(3, players.length);
     });
+
+    it('requires a minimum amount of ether to enter', async() => {
+        try {
+            await raffle.methods.enter().send({
+                from: accounts[0],
+                value: 200
+            });
+            assert(false);
+        } catch(err){
+            assert(err);
+        }
+    });
+
+    it('only manager can call pickWinner', async () => {
+        try {
+            await raffle.methods.pickWinner().send({
+                from: accounts[1]
+            });
+            assert(false);
+        } catch (err){
+            assert(err);
+        }
+    });
+
+    it('sends money to the winner and resets players array', async () => {
+        await raffle.methods.enter().send({
+            from: accounts[0], 
+            value: web3.utils.toWei('1','ether')
+        });
+
+        const initialBalance = await web3.eth.getBalance(accounts[0]);
+
+        await raffle.methods.pickWinner().send({ from: accounts[0] });
+
+        const finalBalance = await web3.eth.getBalance(accounts[0]);
+        const difference = finalBalance - initialBalance;
+        assert(difference > web3.utils.toWei('.9', 'ether'));
+    });
 });
