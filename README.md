@@ -1,0 +1,1 @@
+Participants submit one Ether to be entered in a raffle on the Ethereum network. A manager evokes the end of the raffle and one participant gets the sum of Ether.
